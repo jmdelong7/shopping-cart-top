@@ -1,10 +1,12 @@
 import { AppBar, Toolbar, Typography, Button, IconButton, Badge, Box } from '@mui/material';
 import { ShoppingCart as ShoppingCartIcon } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { state } = useCart();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -51,7 +53,7 @@ const Header = () => {
             onClick={() => navigate('/cart')}
             sx={{ ml: 1 }}
           >
-            <Badge badgeContent={0} color="secondary">
+            <Badge badgeContent={state.totalItems} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>

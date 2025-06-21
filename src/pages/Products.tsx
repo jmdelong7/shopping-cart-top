@@ -10,17 +10,22 @@ import {
   Card,
   CardMedia,
   CardContent,
-  CardActions
+  CardActions,
+  IconButton,
+  TextField
 } from '@mui/material';
-import { Refresh as RefreshIcon } from '@mui/icons-material';
+import { Refresh as RefreshIcon, Add as AddIcon, Remove as RemoveIcon } from '@mui/icons-material';
 import { fetchProducts } from '../data/products';
 import { Product } from '../types';
-import { formatPrice } from '../utils/helpers';
+import { formatPrice, validateQuantity } from '../utils/helpers';
+import { useCart } from '../context/CartContext';
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [quantities, setQuantities] = useState<Record<number, number>>({});
+  const { addItem } = useCart();
 
   const loadProducts = async () => {
     try {
@@ -28,6 +33,12 @@ const Products = () => {
       setError(null);
       const fetchedProducts = await fetchProducts();
       setProducts(fetchedProducts);
+      // Initialize quantities to 1 for each product
+      const initialQuantities: Record<number, number> = {};
+      fetchedProducts.forEach(product => {
+        initialQuantities[product.id] = 1;
+      });
+      setQuantities(initialQuantities);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
@@ -41,6 +52,36 @@ const Products = () => {
 
   const handleRetry = () => {
     loadProducts();
+  };
+
+  const getQuantity = (productId: number) => quantities[productId] || 1;
+
+  const updateQuantity = (productId: number, newQuantity: number, maxStock: number) => {
+    const validatedQuantity = validateQuantity(newQuantity, maxStock);
+    setQuantities(prev => ({
+      ...prev,
+      [productId]: validatedQuantity
+    }));
+  };
+
+  const handleQuantityChange = (productId: number, value: string, maxStock: number) => {
+    const numValue = parseInt(value) || 1;
+    updateQuantity(productId, numValue, maxStock);
+  };
+
+  const increaseQuantity = (productId: number, maxStock: number) => {
+    const currentQuantity = getQuantity(productId);
+    updateQuantity(productId, currentQuantity + 1, maxStock);
+  };
+
+  const decreaseQuantity = (productId: number, maxStock: number) => {
+    const currentQuantity = getQuantity(productId);
+    updateQuantity(productId, currentQuantity - 1, maxStock);
+  };
+
+  const handleAddToCart = (product: Product) => {
+    const quantity = getQuantity(product.id);
+    addItem(product, quantity);
   };
 
   if (loading) {
@@ -170,10 +211,46 @@ const Products = () => {
                       ⭐ {product.rating.rate}/5 ({product.rating.count} reviews)
                     </Typography>
                   )}
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Stock: {product.stock}
+                  </Typography>
                 </CardContent>
-                <CardActions sx={{ p: 2, pt: 0 }}>
-                  <Button variant="contained" fullWidth disabled>
-                    Add to Cart (Coming Soon)
+                <CardActions sx={{ p: 2, pt: 0, flexDirection: 'column', gap: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                    <IconButton 
+                      size="small"
+                      onClick={() => decreaseQuantity(product.id, product.stock)}
+                      disabled={getQuantity(product.id) <= 1}
+                    >
+                      <RemoveIcon />
+                    </IconButton>
+                    <TextField
+                      size="small"
+                      type="number"
+                      value={getQuantity(product.id)}
+                      onChange={(e) => handleQuantityChange(product.id, e.target.value, product.stock)}
+                      inputProps={{ 
+                        min: 1, 
+                        max: product.stock,
+                        style: { textAlign: 'center' }
+                      }}
+                      sx={{ width: '80px' }}
+                    />
+                    <IconButton 
+                      size="small"
+                      onClick={() => increaseQuantity(product.id, product.stock)}
+                      disabled={getQuantity(product.id) >= product.stock}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Box>
+                  <Button 
+                    variant="contained" 
+                    fullWidth 
+                    onClick={() => handleAddToCart(product)}
+                    disabled={product.stock < 1}
+                  >
+                    Add to Cart
                   </Button>
                 </CardActions>
               </Card>
