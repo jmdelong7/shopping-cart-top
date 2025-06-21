@@ -9,6 +9,7 @@ This is a comprehensive plan for building a modern React shopping cart SPA. The 
 ### Phase 1 - Project Setup & Foundation
 
 **Setup Tasks:**
+
 - Initialize Vite React project with TypeScript support
 - Create package.json and configure Vite for React + TypeScript
 - Install core dependencies:
@@ -22,6 +23,7 @@ This is a comprehensive plan for building a modern React shopping cart SPA. The 
   - `vite`
 
 **Project Structure:**
+
 ```
 ├── public/
 │   └── index.html          # Main HTML file
@@ -53,64 +55,100 @@ This is a comprehensive plan for building a modern React shopping cart SPA. The 
 ```
 
 **Theme Setup:**
+
 - Create custom MUI theme with branded color palette
 - Configure typography (font family, sizes, weights)
 - Set up responsive breakpoints
 - Define component overrides for buttons, cards, forms
 
 **Basic Routing:**
+
 - Implement React Router with routes for Home, Products, Cart
 - Create Layout component with Header navigation
 - Set up basic page components with placeholder content
 
-### Phase 2 - Core Functionality
+### Phase 2 - Core Functionality (10 Steps)
 
-**Cart Context Implementation:**
-- Create CartContext with useReducer for complex state operations
-- Implement cart actions: ADD_ITEM, UPDATE_QUANTITY, REMOVE_ITEM, CLEAR_CART
-- Add cart calculations: total items, total price, subtotals
-- Provide cart state and dispatch functions to components
+**Step 1: Create Product Data Structure & Types**
 
-**Product Display System:**
-- Create ProductCard component with:
-  - Product image, name, description, price
-  - Quantity selector with +/- buttons
-  - Add to Cart button with loading state
-  - Stock status indicator
-- Build Products page with responsive Grid layout
-- Implement product data structure with sample products
+- Define TypeScript interfaces for Product and CartItem
+- Create sample product data in `/src/data/products.ts`
+- Add utility helper functions in `/src/utils/helpers.ts`
 
-**Navigation & Header:**
-- Build Header component with AppBar and Toolbar
-- Add site logo/branding
-- Implement navigation menu (Home, Products)
-- Create cart icon with Badge showing item count
-- Make header responsive for mobile/tablet/desktop
+**Step 2: Implement Cart Context Foundation**
 
-**Cart Management:**
-- Build Cart page with list of cart items
-- Create CartItem component with:
-  - Product details and image
-  - Quantity controls (increase/decrease)
-  - Remove item functionality
-  - Subtotal calculation
-- Add cart summary with totals and checkout placeholder
-- Implement empty cart state with back-to-products link
+- Create CartContext with useReducer in `/src/context/CartContext.tsx`
+- Define cart actions: ADD_ITEM, UPDATE_QUANTITY, REMOVE_ITEM, CLEAR_CART
+- Set up basic cart state structure and reducer logic
+
+**Step 3: Add Cart Calculations & Context Provider**
+
+- Implement cart calculation functions (total items, total price, subtotals)
+- Create CartProvider component to wrap the app
+- Connect CartContext to App.tsx
+
+**Step 4: Update Header with Cart Badge Integration**
+
+- Connect Header component to CartContext
+- Update cart badge to show actual item count
+- Test cart badge updates with mock data
+
+**Step 5: Create ProductCard Component**
+
+- Build ProductCard with product display (image, name, description, price)
+- Add quantity selector with +/- buttons
+- Implement "Add to Cart" button with cart context integration
+- Include stock status indicator
+
+**Step 6: Build Products Page Layout**
+
+- Update Products page to use real product data
+- Implement responsive Grid layout for ProductCard components
+- Test add-to-cart functionality from products page
+
+**Step 7: Create CartItem Component**
+
+- Build CartItem component for individual cart entries
+- Add quantity controls (increase/decrease buttons)
+- Implement remove item functionality
+- Display subtotal calculations per item
+
+**Step 8: Build Cart Page Functionality**
+
+- Update Cart page to display actual cart items using CartItem components
+- Add cart summary section with totals
+- Implement empty cart state with back-to-products navigation
+
+**Step 9: Add Checkout Placeholder & Cart Actions**
+
+- Create checkout button placeholder in cart summary
+- Add "Clear Cart" functionality
+- Implement cart action feedback (loading states, confirmations)
+
+**Step 10: Integration Testing & Bug Fixes**
+
+- Test complete user flow: Home → Products → Add items → Cart → Manage items
+- Fix any integration issues between components
+- Verify all cart operations work correctly
+- Ensure responsive design works across components
 
 ### Phase 3 - Polish & Enhancement
 
 **LocalStorage Persistence:**
+
 - Add useEffect to save cart state to localStorage
 - Implement cart state hydration on app initialization
 - Handle localStorage errors gracefully
 
 **Responsive Design:**
+
 - Ensure all components work on mobile, tablet, desktop
 - Optimize product grid columns for different screen sizes
 - Make cart layout mobile-friendly
 - Test header navigation on small screens
 
 **User Experience Enhancements:**
+
 - Add loading states for cart operations
 - Implement success/error messages for cart actions
 - Add smooth transitions between pages
@@ -118,6 +156,7 @@ This is a comprehensive plan for building a modern React shopping cart SPA. The 
 - Add hover effects and interactive feedback
 
 **Accessibility Features:**
+
 - Add ARIA labels for screen readers
 - Ensure keyboard navigation works
 - Implement proper focus management
@@ -125,6 +164,7 @@ This is a comprehensive plan for building a modern React shopping cart SPA. The 
 - Use semantic HTML elements
 
 **Error Handling:**
+
 - Add error boundaries for React error handling
 - Handle cart operation failures gracefully
 - Display user-friendly error messages
@@ -133,12 +173,14 @@ This is a comprehensive plan for building a modern React shopping cart SPA. The 
 ## Technical Considerations
 
 **State Management:**
+
 - Use Context API with useReducer for cart state
 - Consider React.memo for ProductCard performance
 - Use useMemo for expensive cart calculations
 - Implement proper dependency arrays in useEffect
 
 **Data Structures:**
+
 ```javascript
 // Product object
 {
@@ -160,11 +202,11 @@ This is a comprehensive plan for building a modern React shopping cart SPA. The 
 ```
 
 **Performance Optimizations:**
+
 - Lazy load product images
 - Memo expensive calculations
 - Debounce quantity input changes
 - Optimize re-renders with proper state structure
-
 
 ## Success Criteria
 
