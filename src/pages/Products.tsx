@@ -33,10 +33,10 @@ const Products = () => {
       setError(null);
       const fetchedProducts = await fetchProducts();
       setProducts(fetchedProducts);
-      // Initialize quantities to 1 for each product
+      // Initialize quantities to 0 for each product to allow user selection
       const initialQuantities: Record<number, number> = {};
       fetchedProducts.forEach(product => {
-        initialQuantities[product.id] = 1;
+        initialQuantities[product.id] = 0;
       });
       setQuantities(initialQuantities);
     } catch (err) {
@@ -54,7 +54,7 @@ const Products = () => {
     loadProducts();
   };
 
-  const getQuantity = (productId: number) => quantities[productId] || 1;
+  const getQuantity = (productId: number) => quantities[productId] || 0;
 
   const updateQuantity = (productId: number, newQuantity: number, maxStock: number) => {
     const validatedQuantity = validateQuantity(newQuantity, maxStock);
@@ -65,7 +65,7 @@ const Products = () => {
   };
 
   const handleQuantityChange = (productId: number, value: string, maxStock: number) => {
-    const numValue = parseInt(value) || 1;
+    const numValue = parseInt(value) || 0;
     updateQuantity(productId, numValue, maxStock);
   };
 
@@ -81,7 +81,9 @@ const Products = () => {
 
   const handleAddToCart = (product: Product) => {
     const quantity = getQuantity(product.id);
-    addItem(product, quantity);
+    if (quantity > 0) {
+      addItem(product, quantity);
+    }
   };
 
   if (loading) {
@@ -220,7 +222,7 @@ const Products = () => {
                     <IconButton 
                       size="small"
                       onClick={() => decreaseQuantity(product.id, product.stock)}
-                      disabled={getQuantity(product.id) <= 1}
+                      disabled={getQuantity(product.id) <= 0}
                     >
                       <RemoveIcon />
                     </IconButton>
@@ -230,7 +232,7 @@ const Products = () => {
                       value={getQuantity(product.id)}
                       onChange={(e) => handleQuantityChange(product.id, e.target.value, product.stock)}
                       inputProps={{ 
-                        min: 1, 
+                        min: 0, 
                         max: product.stock,
                         style: { textAlign: 'center' }
                       }}
@@ -248,9 +250,9 @@ const Products = () => {
                     variant="contained" 
                     fullWidth 
                     onClick={() => handleAddToCart(product)}
-                    disabled={product.stock < 1}
+                    disabled={product.stock < 1 || getQuantity(product.id) === 0}
                   >
-                    Add to Cart
+                    {getQuantity(product.id) === 0 ? 'Select Quantity' : 'Add to Cart'}
                   </Button>
                 </CardActions>
               </Card>

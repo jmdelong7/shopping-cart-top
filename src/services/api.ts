@@ -19,6 +19,9 @@ const API_BASE_URL = 'https://fakestoreapi.com';
  * Transform Fake Store API product to our Product interface
  */
 const transformProduct = (apiProduct: FakeStoreProduct): Product => {
+  // Generate realistic stock levels between 5-50 for better UX testing
+  const randomStock = Math.floor(Math.random() * 46) + 5; // 5-50 range
+  
   return {
     id: apiProduct.id,
     name: apiProduct.title,
@@ -26,7 +29,7 @@ const transformProduct = (apiProduct: FakeStoreProduct): Product => {
     price: apiProduct.price,
     image: apiProduct.image,
     category: apiProduct.category,
-    stock: 1, // Default stock value as requested
+    stock: randomStock,
     rating: apiProduct.rating,
   };
 };

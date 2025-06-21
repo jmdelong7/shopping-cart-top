@@ -56,7 +56,7 @@ export const generateCartItemId = (productId: number): number => {
  * Validate quantity input
  */
 export const validateQuantity = (quantity: number, maxStock: number): number => {
-  if (quantity < 1) return 1;
+  if (quantity < 0) return 0;
   if (quantity > maxStock) return maxStock;
   return Math.floor(quantity);
 };
